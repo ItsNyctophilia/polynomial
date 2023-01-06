@@ -16,6 +16,8 @@ void poly_destroy(polynomial *eqn);
 
 void poly_print(const polynomial *eqn);
 
+char *poly_to_string(const polynomial *p);
+
 struct term *poly_create_term(int coeff, unsigned int exp);
 
 #endif

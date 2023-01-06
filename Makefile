@@ -2,7 +2,7 @@
 CFLAGS += -Wall -Wextra -Wpedantic
 CFLAGS += -Wvla -Wwrite-strings -Waggregate-return -Wfloat-equal
 
-libpoly.a: libpoly.a(poly.o)
+libpoly.a: libpoly.a(poly.o) -lm
 
 .PHONY: debug
 debug: CFLAGS += -g
