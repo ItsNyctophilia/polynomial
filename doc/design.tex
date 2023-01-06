@@ -1,0 +1,133 @@
+\documentclass[11pt]{report}
+\usepackage[scaled]{helvet}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage{xcolor}
+\usepackage{setspace}
+\renewcommand\familydefault{\sfdefault}
+\pagenumbering{gobble}
+
+\begin{document}
+
+\title{Design Plan - Polynomials}
+\author{James Viner}
+\date{} %Remove date
+\maketitle
+
+\doublespacing
+
+\vspace*{\fill}
+\begin{center}
+\section*{\textbf{Project Summary}}
+The library libpoly is a suite of functions that enable the creation, simplification and basic usage of polynomials where 'x' is the only allowed variable.
+\end{center}
+\vfill
+\pagebreak
+\section*{Features Targeted}
+\subsection*{Automated Testing}
+Write automated unit tests for all appropriate (I'm interpreting this to mean 'public') functions. Anything the user of the library will be interacted with should be tested for the most common use cases as well as any particular edge-cases that I expect might cause issues (such as a subtraction operation that results in 0 as the answer for the entire polynomial).
+\subsection*{Polynomial multiplication}
+Enable the multiplication of polynomials through use of this function. This will involve walking the linked list, multiplying all existing coefficients from the first argument by the second argument's coefficient, and adding the exponents in the same way. Afterwards, simplification will need to be performed to ensure each node is still in the correct place.
+\subsection*{Polynomial simplification}
+Make the finished polynomial from any given mathematical operation be simplified down as much as possible. This shouldn't be too difficult, just requiring the actual mathematical portion of any math-intensive function to be written properly along with having a separate function that re-orders each node making up the polynomial in descending order by exponent size.
+\pagebreak
+\section*{Architecture}
+\subsection*{Data}
+Each individual term in a given polynomial will be made up of an integer coefficient, an unsigned integer exponent, a pointer to the previous node, and a pointer to the next node, making the overall structure a doubly-linked list. The reason for going for a doubly-linked list over a normal linked list would be for ease of sorting, allowing an insertion sort algorithm to be implemented directly on the list.
+\pagebreak
+\subsection*{Significant Functions}
+\subsubsection*{\texttt{\textcolor{red}{struct term *poly\_create\_term(int coefficient, unsigned int exp)}}}
+Creates a new term by some given combination of an exponent and a coefficient.
+\subsubsection*{\texttt{\textcolor{red}{void poly\_destroy(polynomial *p)}}}
+Frees memory used by a polynomial.
+\subsubsection*{\texttt{\textcolor{red}{void poly\_print(const polynomial *p)}}}
+Prints a polynomial to stdout.
+\subsubsection*{\texttt{\textcolor{red}{char *poly\_to\_string(const polynomial *p)}}}
+Returns a malloced string for a given polynomial with the parameter as x. This should be doable by walking the linked list and building out the finished string one node at a time.
+\subsubsection*{\texttt{\textcolor{red}{polynomial *poly\_add(const polynomial *a, const polynomial *b)}}}
+Returns a malloced polynomial summing two given polynomials together.
+\subsubsection*{\texttt{\textcolor{red}{polynomial *poly\_sub(const polynomial *a, const polynomial *b);}}}
+Returns a malloced polynomial subtracting the second polynomial from the first. This can be done by calling the poly\_add function with the second argument's coefficient multiplied by -1.
+\subsubsection*{\texttt{\textcolor{red}{bool poly\_equal(const polynomial *a, const polynomial *b)}}}
+Returns true if both polynomial arguments have the same terms, otherwise false. This should involve walking both polynomial node chains at the same time and comparing the exponents/coefficients.
+\subsubsection*{\texttt{\textcolor{red}{double poly\_eval(const polynomial *p, double x)}}}
+Evaluates a polynomial by substituting the 'x' for a given value.
+\subsubsection*{\texttt{\textcolor{red}{void poly\_iterate(polynomial *p, void (*transform)(struct term *))}}}
+Calls an arbitrary transform function on each term in a given polynomial.
+\subsubsection*{\texttt{\textcolor{red}{static void simplify\_poly(polynomial *p, unsigned int idx)}}}
+Private function that simplifies a given polynomial node chain and re-orders it in descending order by exponent. Will need to be called at least once in all other functions to ensure that everything is ordered properly and simplified.
+\pagebreak
+\section*{User Interface}
+Users of the library will be able to use all public functions in order to create, transform, and destroy polynomials. Helper functions will not be publicly accessible, but provide additional internal-use utility to the public functions in the library.
+\pagebreak
+\section*{General Approach}
+The objective here will be to start by writing some of the necessary functions for combining individual terms into complex polynomials like poly\_add or poly\_sub, then moving onto the more complex ones that involve mathematical operations or recursively performing operations on the polynomial node chain. Helper functions will be added as necessary to provide internal functionality that doesn't need to be explicitly shown to the user.
+\end{document}
+\documentclass[11pt]{report}
+\usepackage[scaled]{helvet}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage{xcolor}
+\usepackage{setspace}
+\renewcommand\familydefault{\sfdefault}
+\pagenumbering{gobble}
+
+\begin{document}
+
+\title{Design Plan - Polynomials}
+\author{James Viner}
+\date{} %Remove date
+\maketitle
+
+\doublespacing
+
+\vspace*{\fill}
+\begin{center}
+\section*{\textbf{Project Summary}}
+The library libpoly is a suite of functions that enable the creation, simplification and basic usage of polynomials where 'x' is the only allowed variable.
+\end{center}
+\vfill
+\pagebreak
+\section*{Features Targeted}
+\subsection*{Automated Testing}
+Write automated unit tests for all appropriate (I'm interpreting this to mean 'public') functions. Anything the user of the library will be interacted with should be tested for the most common use cases as well as any particular edge-cases that I expect might cause issues (such as a subtraction operation that results in 0 as the answer for the entire polynomial).
+\subsection*{Polynomial multiplication}
+Enable the multiplication of polynomials through use of this function. This will involve walking the linked list, multiplying all existing coefficients from the first argument by the second argument's coefficient, and adding the exponents in the same way. Afterwards, simplification will need to be performed to ensure each node is still in the correct place.
+\subsection*{Polynomial simplification}
+Make the finished polynomial from any given mathematical operation be simplified down as much as possible. This shouldn't be too difficult, just requiring the actual mathematical portion of any math-intensive function to be written properly along with having a separate function that re-orders each node making up the polynomial in descending order by exponent size.
+\pagebreak
+\section*{Architecture}
+\subsection*{Data}
+Each individual term in a given polynomial will be made up of an integer coefficient, an unsigned integer exponent, a pointer to the previous node, and a pointer to the next node, making the overall structure a doubly-linked list. The reason for going for a doubly-linked list over a normal linked list would be for ease of sorting, allowing an insertion sort algorithm to be implemented directly on the list.
+\pagebreak
+\subsection*{Significant Functions}
+\subsubsection*{\texttt{\textcolor{red}{struct term *poly\_create\_term(int coefficient, unsigned int exp)}}}
+Creates a new term by some given combination of an exponent and a coefficient.
+\subsubsection*{\texttt{\textcolor{red}{void poly\_destroy(polynomial *p)}}}
+Frees memory used by a polynomial.
+\subsubsection*{\texttt{\textcolor{red}{void poly\_print(const polynomial *p)}}}
+Prints a polynomial to stdout.
+\subsubsection*{\texttt{\textcolor{red}{char *poly\_to\_string(const polynomial *p)}}}
+Returns a malloced string for a given polynomial with the parameter as x. This should be doable by walking the linked list and building out the finished string one node at a time.
+\subsubsection*{\texttt{\textcolor{red}{polynomial *poly\_add(const polynomial *a, const polynomial *b)}}}
+Returns a malloced polynomial summing two given polynomials together.
+\subsubsection*{\texttt{\textcolor{red}{polynomial *poly\_sub(const polynomial *a, const polynomial *b);}}}
+Returns a malloced polynomial subtracting the second polynomial from the first. This can be done by calling the poly\_add function with the second argument's coefficient multiplied by -1.
+\subsubsection*{\texttt{\textcolor{red}{bool poly\_equal(const polynomial *a, const polynomial *b)}}}
+Returns true if both polynomial arguments have the same terms, otherwise false. This should involve walking both polynomial node chains at the same time and comparing the exponents/coefficients.
+\subsubsection*{\texttt{\textcolor{red}{double poly\_eval(const polynomial *p, double x)}}}
+Evaluates a polynomial by substituting the 'x' for a given value.
+\subsubsection*{\texttt{\textcolor{red}{void poly\_iterate(polynomial *p, void (*transform)(struct term *))}}}
+Calls an arbitrary transform function on each term in a given polynomial.
+\subsubsection*{\texttt{\textcolor{red}{static void simplify\_poly(polynomial *p, unsigned int idx)}}}
+Private function that simplifies a given polynomial node chain and re-orders it in descending order by exponent. Will need to be called at least once in all other functions to ensure that everything is ordered properly and simplified.
+\pagebreak
+\section*{User Interface}
+Users of the library will be able to use all public functions in order to create, transform, and destroy polynomials. Helper functions will not be publicly accessible, but provide additional internal-use utility to the public functions in the library.
+\pagebreak
+\section*{General Approach}
+The objective here will be to start by writing some of the necessary functions for combining individual terms into complex polynomials like poly\_add or poly\_sub, then moving onto the more complex ones that involve mathematical operations or recursively performing operations on the polynomial node chain. Helper functions will be added as necessary to provide internal functionality that doesn't need to be explicitly shown to the user.
+\end{document}
+
