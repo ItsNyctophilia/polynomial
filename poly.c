@@ -198,6 +198,24 @@ polynomial *poly_sub(const polynomial * a, const polynomial * b)
 	return chain;
 }
 
+bool poly_equal(const polynomial *a, const polynomial *b) 
+{
+  if (!a || !b) {
+    return(false);
+  }
+  while(a && b) {
+    if (a->coeff != b->coeff || a->exp != b->exp) {
+      return(false);
+    }
+    a = a->next;
+    b = b->next;
+  }
+  if(a || b) {
+    return(false);
+  }
+  return(true);
+}
+
 static void swap_poly(polynomial *p) {
 // Swaps a given polynomial's data with the previous polynomial's data
 // if the given polynomial p has a larger exponent than it.
