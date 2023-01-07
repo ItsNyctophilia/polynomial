@@ -1,0 +1,59 @@
+\documentclass[11pt]{report}
+\usepackage[scaled]{helvet}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage{xcolor}
+\usepackage{setspace}
+\renewcommand\familydefault{\sfdefault}
+\pagenumbering{gobble}
+
+\begin{document}
+
+\title{Test Plan - Polynomials}
+\author{James Viner}
+\date{} %Remove date
+\maketitle
+
+\doublespacing
+
+\pagebreak
+\section*{Public Functions}
+\subsection*{\texttt{\textcolor{red}{poly\_create\_term()}}}
+Specific tests for this function were not written given that the code was provided by the spec and the success of all other tests is predicated on its ability to function as intended.
+\subsection*{\texttt{\textcolor{red}{poly\_destroy()}}}
+Specific tests for this function were not written given that the code was provided by the spec and the success of all other tests is predicated on its ability to function as intended.
+\subsection*{\texttt{\textcolor{red}{poly\_poly\_print()}}}
+Specific tests for this function were not written given that the code was provided by the spec.
+\subsection*{\texttt{\textcolor{red}{poly\_to\_string()}}}
+Testing for this function involves ensuring the correct string conversion of a given polynomial in the case of both positive, negative, and terms whose coefficient becomes zero before conversion.
+\subsection*{\texttt{\textcolor{red}{poly\_add()}}}
+Testing for this function involves ensuring a given polynomial successfully combining both given polynomials and returning the resultant chain in order.
+\subsection*{\texttt{\textcolor{red}{poly\_sub()}}}
+Testing for this function involves ensuring the given polynomial in the second argument has its terms successfully modified to have coefficients with inverse signs as well as combining both polynomials and returning the resultant chain in order.
+\subsection*{\texttt{\textcolor{red}{poly\_equal()}}}
+Testing for this function involves comparing a set of identical polynomials as well as several sets of polynomials that differ in some way, such as signage, number of terms, or coefficient/exponent values.
+\subsection*{\texttt{\textcolor{red}{poly\_eval()}}}
+Testing for this function involves comparing the resultant double to the known-correct solution to ensure validity.
+\subsection*{\texttt{\textcolor{red}{poly\_iterate()}}}
+Testing for this function involves ensuring the user's arbitrary transform function is called recursively on each node in the chain and that the resultant terms are sorted and with unique exponents.
+\pagebreak
+\section*{Private Functions}
+\subsection*{\texttt{\textcolor{red}{sort\_poly()}}}
+Testing for this function involves performing a transformation that normally would leave terms out-of-order without explicit sorting and validating the result. This function may also be combined with a simplification function later, and if that becomes the case, testing will also need to ensure resultant polynomials are in their most simplified form.
+\subsection*{\texttt{\textcolor{red}{swap\_poly()}}}
+Specific tests for the function were not written given that the code is a small helper function for sort\_poly and the success of that function is predicated on this function's ability to perform as intended.
+\subsection*{\texttt{\textcolor{red}{sizeof\_poly()}}}
+Specific tests for the function were not written given that the code is a small helper function for poly\_string and the success of that function is predicated on this function's ability to perform as intended.
+\pagebreak
+\section*{Non function-specific Testing}
+Testing in this section will be combined into testing from the previous sections, although some edge-cases may get their own specific tests as they arise during development.
+\subsection*{\texttt{\textcolor{red}{Zero as Coefficient}}}
+All functions will need to be able to avoid printing or performing operations on all functions with zero as a coefficient.
+\subsection*{\texttt{\textcolor{red}{NULL pointers}}}
+All functions will need to be able to avoid performing operations on NULL pointers and return an appropriate value when they do so.
+\subsection*{\texttt{\textcolor{red}{NULL polynomial}}}
+All functions will need to be able to avoid performing operations on NULL pointers and return an appropriate value when they do so.
+\subsection*{\texttt{\textcolor{red}{Correct Signage}}}
+All functions will need to display the correct signage symbols for any particular output.
+\end{document}
