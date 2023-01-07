@@ -5,8 +5,8 @@
 
 #include "poly.h"
 
-static void sort_poly(polynomial *p);
-static void sort_poly(polynomial *p);
+static void sort_poly(polynomial * p);
+static void sort_poly(polynomial * p);
 
 struct term *poly_create_term(int coeff, unsigned int exp)
 {
@@ -72,7 +72,7 @@ static unsigned int sizeof_poly(const polynomial * p)
 	return (total_size);
 }
 
-char *poly_to_string(const polynomial *p)
+char *poly_to_string(const polynomial * p)
 {
 	// Syntax modified from Liam Echlin's whiteboard demo
 	if (!p) {
@@ -150,7 +150,7 @@ polynomial *poly_add(const polynomial * a, const polynomial * b)
 		last = *curr;
 		curr = &(*curr)->next;
 	}
-  sort_poly(chain);
+	sort_poly(chain);
 	return chain;
 }
 
@@ -194,73 +194,95 @@ polynomial *poly_sub(const polynomial * a, const polynomial * b)
 		last = *curr;
 		curr = &(*curr)->next;
 	}
-  sort_poly(chain);
+	sort_poly(chain);
 	return chain;
 }
 
-bool poly_equal(const polynomial *a, const polynomial *b) 
+bool poly_equal(const polynomial * a, const polynomial * b)
 {
-  if (!a || !b) {
-    return(false);
-  }
-  while(a && b) {
-    if (a->coeff != b->coeff || a->exp != b->exp) {
-      return(false);
-    }
-    a = a->next;
-    b = b->next;
-  }
-  if(a || b) {
-    return(false);
-  }
-  return(true);
+	if (!a || !b) {
+		return (false);
+	}
+	while (a && b) {
+		if (a->coeff != b->coeff || a->exp != b->exp) {
+			return (false);
+		}
+		a = a->next;
+		b = b->next;
+	}
+	if (a || b) {
+		return (false);
+	}
+	return (true);
 }
 
-double poly_eval(const polynomial *p, double x)
+double poly_eval(const polynomial * p, double x)
 {
-  if (!p) {
-    return(0.0);
-  }
-  double total = 0.0;
-  while(p) {
-    total += (p->coeff * (pow(x, p->exp)));
-    p = p->next;
-  }
-  return(total);
+	if (!p) {
+		return (0.0);
+	}
+	double total = 0.0;
+	while (p) {
+		total += (p->coeff * (pow(x, p->exp)));
+		p = p->next;
+	}
+	return (total);
 }
-static void swap_poly(polynomial *p) {
+
+void poly_iterate(polynomial * p, void (*transform)(struct term *))
+{
+	// Code taken from Liam Echlin
+	if(!p || !transform) {
+		return;
+	}
+	unsigned int sz = 0;
+
+	polynomial *p_tmp = p;
+	while (p_tmp) {
+		++sz;
+		p_tmp = p_tmp->next;
+	}
+	for (size_t i = 0; i < sz; ++i) {
+		transform(p);
+		p = p->next;
+	}
+	return;
+}
+
+static void swap_poly(polynomial * p)
+{
 // Swaps a given polynomial's data with the previous polynomial's data
 // if the given polynomial p has a larger exponent than it.
-    int tmp_coeff = p->prev->coeff;
-    unsigned int tmp_exp = p->prev->exp;
-    p->prev->coeff = p->coeff;
-    p->prev->exp = p->exp;
-    p->coeff = tmp_coeff;
-    p->exp = tmp_exp;
-    return;
+	int tmp_coeff = p->prev->coeff;
+	unsigned int tmp_exp = p->prev->exp;
+	p->prev->coeff = p->coeff;
+	p->prev->exp = p->exp;
+	p->coeff = tmp_coeff;
+	p->exp = tmp_exp;
+	return;
 }
 
-static void sort_poly(polynomial *p) 
+static void sort_poly(polynomial * p)
 {
-  if (!p) {
-    return;
-  }
-  // Code based off of from Liam Echlin's insertion sort demo
-  unsigned int sz = 0;
+	if (!p) {
+		return;
+	}
+	// Code based off of from Liam Echlin's insertion sort demo
+	unsigned int sz = 0;
 
-  polynomial *p_tmp = p;
-  while(p_tmp) {
-    ++sz;
-    p_tmp = p_tmp->next;
-  }
+	polynomial *p_tmp = p;
+	while (p_tmp) {
+		++sz;
+		p_tmp = p_tmp->next;
+	}
 
-  for (unsigned int i = 1; i < sz; ++i) {
-    unsigned int idx = i;
-     while(idx > 0 && p->prev && p->exp > p->prev->exp) {
-      swap_poly(p);
-      --idx;
-    }
-    ++i;
-  }
-  return;
+	for (unsigned int i = 1; i < sz; ++i) {
+		unsigned int idx = i;
+		while (idx > 0 && p->prev && p->exp > p->prev->exp) {
+			swap_poly(p);
+			--idx;
+		}
+		++i;
+	}
+	return;
 }

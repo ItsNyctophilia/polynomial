@@ -30,6 +30,8 @@ bool poly_equal(const polynomial *a, const polynomial *b);
 
 double poly_eval(const polynomial *p, double x);
 
+void poly_iterate(polynomial *p, void (*transform)(struct term *));
+
 struct term *poly_create_term(int coeff, unsigned int exp);
 
 #endif

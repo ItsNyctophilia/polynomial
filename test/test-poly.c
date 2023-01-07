@@ -113,6 +113,26 @@ START_TEST(test_poly_eval)
 	poly_destroy(poly_result_b1);
 } END_TEST 
 
+static void triple(struct term *t)
+{
+	t->coeff *=3;
+	return;
+}
+
+START_TEST(test_poly_iterate)
+{
+	polynomial *poly_term_a1 = poly_create_term(2, 5);
+	polynomial *poly_term_a2 = poly_create_term(1, 3);
+	polynomial *poly_result_a1 = poly_add(poly_term_a1, poly_term_a2);
+	poly_iterate(poly_result_a1, triple);
+	ck_assert_int_eq(6, poly_result_a1->coeff);
+	ck_assert_int_eq(3, poly_result_a1->next->coeff);
+
+	poly_destroy(poly_term_a1);
+	poly_destroy(poly_term_a2);
+	poly_destroy(poly_result_a1);
+} END_TEST 
+
 START_TEST(test_poly_sort)
 {
 	polynomial *poly_term_1 = poly_create_term(2, 5);
@@ -146,6 +166,7 @@ Suite * poly_test_suite(void)
 	tcase_add_test(tc1, test_poly_sub);
 	tcase_add_test(tc1, test_poly_equal);
 	tcase_add_test(tc1, test_poly_eval);
+	tcase_add_test(tc1, test_poly_iterate);
 	tcase_add_test(tc1, test_poly_sort);
 	return s1;
 }
