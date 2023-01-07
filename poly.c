@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -80,29 +81,71 @@ char *poly_to_string(const polynomial * p)
 	}
 
 	char *end_poly_str = malloc(1);
+	if (!end_poly_str) {
+		return (NULL);
+	}
 	end_poly_str[0] = '\0';
+	bool first_run = true;
 
 	while (p) {
 		while (!p->coeff) {
 			p = p->next;
+			if (!p) {
+				return (end_poly_str);
+			}
 		}
 		unsigned int poly_size = sizeof_poly(p);
 		poly_size += 2;	// plus space for " +/-"
 		char *curr_poly_str = malloc(poly_size + 1);	// Poly size plus '\0'
-		snprintf(curr_poly_str, poly_size + 1, "%dx^%d", p->coeff,
-			 p->exp);
+		if (!curr_poly_str) {
+			free(end_poly_str);
+			return (NULL);
+		}
 		end_poly_str =
 		    realloc(end_poly_str, strlen(end_poly_str) + poly_size + 1);
 		if (!p->next) {
-			snprintf(curr_poly_str, poly_size + 1, "%dx^%d",
-				 p->coeff, p->exp);
+			if (p->exp) {
+				snprintf(curr_poly_str, poly_size + 1,
+					 "%s%d%s%s%d", first_run
+					 && p->coeff > 0 ? "+" : "", p->coeff,
+					 p->exp > 0 ? "x" : "",
+					 p->exp > 1 ? "^" : "", p->exp);
+			} else {
+				snprintf(curr_poly_str, poly_size + 1,
+					 "%s%d%s%s", first_run
+					 && p->coeff > 0 ? "+" : "", p->coeff,
+					 p->exp > 0 ? "x" : "",
+					 p->exp > 1 ? "^" : "");
+			}
 			strncat(end_poly_str, curr_poly_str,
 				strlen(curr_poly_str));
 			free(curr_poly_str);
 			break;
 		}
-		snprintf(curr_poly_str, poly_size + 1, "%dx^%d %s", p->coeff,
-			 p->exp, p->next->coeff > 0 ? "+" : "");
+		// The following disgusting snprintf call determines which symbols
+		// are displayed for a given term based on its values using a copious
+		// amount of ternary operators
+		if (p->exp > 1) {
+			snprintf(curr_poly_str, poly_size + 1, "%s%d%s%s%d%s%s",
+				 first_run
+				 && p->coeff > 0 ? "+" : "", p->coeff,
+				 p->exp > 0 ? "x" : "", p->exp > 1 ? "^" : "",
+				 p->exp, p->next->coeff
+				 && p->next ? " " : "",
+				 p->next->coeff > 0 ? "+" : "");
+		} else {
+			// Terms with exponents of 1 or 0
+			snprintf(curr_poly_str, poly_size + 1, "%s%d%s%s%s%s",
+				 first_run
+				 && p->coeff > 0 ? "+" : "", p->coeff,
+				 p->exp > 0 ? "x" : "", p->exp > 1 ? "^" : "",
+				 p->next->coeff
+				 && p->next ? " " : "",
+				 p->next->coeff > 0 ? "+" : "");
+		}
+		if (first_run) {
+			first_run = false;
+		}
 		strncat(end_poly_str, curr_poly_str, strlen(curr_poly_str));
 		free(curr_poly_str);
 		p = p->next;

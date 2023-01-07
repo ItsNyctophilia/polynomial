@@ -18,14 +18,22 @@ START_TEST(test_poly_string)
 {
 	polynomial *poly_term = poly_create_term(103, 11);
 	char *end_str = poly_to_string(poly_term);
-	ck_assert_str_eq("103x^11", end_str);
+	ck_assert_str_eq("+103x^11", end_str);
 	polynomial *poly_term_2 = poly_create_term(-100, 10);
 	polynomial *poly_combined_term = poly_add(poly_term, poly_term_2);
+	polynomial *poly_term_3 = poly_create_term(17, 1);
+	poly_combined_term = poly_add(poly_combined_term, poly_term_3);
+	polynomial *poly_term_4 = poly_create_term(5, 0);
+	poly_combined_term = poly_add(poly_combined_term, poly_term_4);
 	free(end_str);
 	end_str = poly_to_string(poly_combined_term);
-	ck_assert_str_eq("103x^11 -100x^10", end_str);
+
+	ck_assert_str_eq("+103x^11 -100x^10 +17x +5", end_str);
+
 	poly_destroy(poly_term);
 	poly_destroy(poly_term_2);
+	poly_destroy(poly_term_3);
+	poly_destroy(poly_term_4);
 	poly_destroy(poly_combined_term);
 	free(end_str);
 } END_TEST 
