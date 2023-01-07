@@ -71,7 +71,7 @@ static unsigned int sizeof_poly(const polynomial * p)
 
 char *poly_to_string(const polynomial * p)
 {
-  // Syntax taken from Liam Echlin
+	// Syntax taken from Liam Echlin
 	if (!p) {
 		return (NULL);
 	}
@@ -150,8 +150,45 @@ polynomial *poly_add(const polynomial * a, const polynomial * b)
 	return chain;
 }
 
-/*static polynomial *poly_sort(const polynomial *p)
+polynomial *poly_sub(const polynomial * a, const polynomial * b)
 {
+	// Syntax taken from Liam Echlin
 
+	polynomial *chain = NULL;
+	polynomial **curr = &chain;
+	polynomial *last = NULL;
+
+	if (!a || !b) {
+		return (NULL);
+	}
+	while (a && b) {
+		if (a->exp > b->exp) {
+			*curr = poly_create_term(a->coeff, a->exp);
+			a = a->next;
+		} else if (a->exp < b->exp) {
+			*curr = poly_create_term((-1) * b->coeff, b->exp);
+			b = b->next;
+		} else {
+			int coeff_total = a->coeff - b->coeff;
+			*curr = poly_create_term(coeff_total, a->exp);
+			a = a->next;
+			b = b->next;
+		}
+		curr = &(*curr)->next;
+	}
+	while (a) {
+		*curr = poly_create_term(a->coeff, a->exp);
+		(*curr)->prev = last;
+		last = *curr;
+		a = a->next;
+		curr = &(*curr)->next;
+	}
+	while (b) {
+		*curr = poly_create_term((-1) * b->coeff, b->exp);
+		b = b->next;
+		(*curr)->prev = last;
+		last = *curr;
+		curr = &(*curr)->next;
+	}
+	return chain;
 }
-*/

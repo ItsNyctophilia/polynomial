@@ -21,6 +21,8 @@ char *poly_to_string(const polynomial *p);
 
 polynomial *poly_add(const polynomial *a, const polynomial *b);
 
+polynomial *poly_sub(const polynomial *a, const polynomial *b);
+
 struct term *poly_create_term(int coeff, unsigned int exp);
 
 #endif
