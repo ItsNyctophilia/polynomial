@@ -155,7 +155,7 @@ char *poly_to_string(const polynomial *p)
 
 polynomial *poly_add(const polynomial *a, const polynomial *b)
 {
-	// Syntax taken from Liam Echlin
+	// Syntax taken from Liam Echlin's whiteboard demo
 
 	polynomial *chain = NULL;
 	polynomial **curr = &chain;
@@ -199,7 +199,7 @@ polynomial *poly_add(const polynomial *a, const polynomial *b)
 
 polynomial *poly_sub(const polynomial *a, const polynomial *b)
 {
-	// Syntax taken from Liam Echlin
+	// Syntax modified from Liam Echlin's poly_add function
 
 	polynomial *chain = NULL;
 	polynomial **curr = &chain;
@@ -274,7 +274,7 @@ double poly_eval(const polynomial *p, double x)
 
 void poly_iterate(polynomial *p, void (*transform)(struct term *))
 {
-	// Code taken from Liam Echlin
+	// Syntax taken from Liam Echlin's list.c iterate function
 	if(!p || !transform) {
 		return;
 	}
