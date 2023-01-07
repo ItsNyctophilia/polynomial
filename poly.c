@@ -6,8 +6,8 @@
 
 #include "poly.h"
 
-static void sort_poly(polynomial * p);
-static void sort_poly(polynomial * p);
+static void sort_poly(polynomial *p);
+static void swap_poly(polynomial *p);
 
 struct term *poly_create_term(int coeff, unsigned int exp)
 {
@@ -21,7 +21,7 @@ struct term *poly_create_term(int coeff, unsigned int exp)
 	return node;
 }
 
-void poly_destroy(polynomial * eqn)
+void poly_destroy(polynomial *eqn)
 {
 	while (eqn) {
 		struct term *tmp = eqn->next;
@@ -30,7 +30,7 @@ void poly_destroy(polynomial * eqn)
 	}
 }
 
-void poly_print(const polynomial * eqn)
+void poly_print(const polynomial *eqn)
 {
 	if (!eqn) {
 		return;
@@ -47,7 +47,7 @@ void poly_print(const polynomial * eqn)
 	poly_print(eqn->next);
 }
 
-static unsigned int sizeof_poly(const polynomial * p)
+static unsigned int sizeof_poly(const polynomial *p)
 {
 	unsigned int total_size = 1;	// Add first digit in coeff
 	unsigned int coeff = abs(p->coeff);
@@ -73,7 +73,7 @@ static unsigned int sizeof_poly(const polynomial * p)
 	return (total_size);
 }
 
-char *poly_to_string(const polynomial * p)
+char *poly_to_string(const polynomial *p)
 {
 	// Syntax modified from Liam Echlin's whiteboard demo
 	if (!p) {
@@ -153,7 +153,7 @@ char *poly_to_string(const polynomial * p)
 	return (end_poly_str);
 }
 
-polynomial *poly_add(const polynomial * a, const polynomial * b)
+polynomial *poly_add(const polynomial *a, const polynomial *b)
 {
 	// Syntax taken from Liam Echlin
 
@@ -197,7 +197,7 @@ polynomial *poly_add(const polynomial * a, const polynomial * b)
 	return chain;
 }
 
-polynomial *poly_sub(const polynomial * a, const polynomial * b)
+polynomial *poly_sub(const polynomial *a, const polynomial *b)
 {
 	// Syntax taken from Liam Echlin
 
@@ -241,7 +241,7 @@ polynomial *poly_sub(const polynomial * a, const polynomial * b)
 	return chain;
 }
 
-bool poly_equal(const polynomial * a, const polynomial * b)
+bool poly_equal(const polynomial *a, const polynomial *b)
 {
 	if (!a || !b) {
 		return (false);
@@ -259,7 +259,7 @@ bool poly_equal(const polynomial * a, const polynomial * b)
 	return (true);
 }
 
-double poly_eval(const polynomial * p, double x)
+double poly_eval(const polynomial *p, double x)
 {
 	if (!p) {
 		return (0.0);
@@ -272,7 +272,7 @@ double poly_eval(const polynomial * p, double x)
 	return (total);
 }
 
-void poly_iterate(polynomial * p, void (*transform)(struct term *))
+void poly_iterate(polynomial *p, void (*transform)(struct term *))
 {
 	// Code taken from Liam Echlin
 	if(!p || !transform) {
@@ -289,10 +289,11 @@ void poly_iterate(polynomial * p, void (*transform)(struct term *))
 		transform(p);
 		p = p->next;
 	}
+  sort_poly(p);
 	return;
 }
 
-static void swap_poly(polynomial * p)
+static void swap_poly(polynomial *p)
 {
 // Swaps a given polynomial's data with the previous polynomial's data
 // if the given polynomial p has a larger exponent than it.
@@ -305,7 +306,7 @@ static void swap_poly(polynomial * p)
 	return;
 }
 
-static void sort_poly(polynomial * p)
+static void sort_poly(polynomial *p)
 {
 	if (!p) {
 		return;

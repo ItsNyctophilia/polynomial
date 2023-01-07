@@ -113,6 +113,9 @@ START_TEST(test_poly_eval)
 	answer = poly_eval(poly_result_b1, 5);
 	ck_assert_double_eq_tol(-6375, answer, 0.001);
 
+	poly_eval(NULL, 2);
+	ck_assert(true);
+
 	poly_destroy(poly_term_a1);
 	poly_destroy(poly_term_a2);
 	poly_destroy(poly_term_b1);
