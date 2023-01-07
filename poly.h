@@ -28,6 +28,8 @@ polynomial *poly_sub(const polynomial *a, const polynomial *b);
 
 bool poly_equal(const polynomial *a, const polynomial *b);
 
+double poly_eval(const polynomial *p, double x);
+
 struct term *poly_create_term(int coeff, unsigned int exp);
 
 #endif

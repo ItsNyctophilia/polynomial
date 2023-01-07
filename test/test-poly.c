@@ -91,6 +91,28 @@ START_TEST(test_poly_equal)
 	poly_destroy(poly_result_b1);
 } END_TEST 
 
+START_TEST(test_poly_eval)
+{
+	polynomial *poly_term_a1 = poly_create_term(2, 5);
+	polynomial *poly_term_a2 = poly_create_term(1, 3);
+	polynomial *poly_result_a1 = poly_add(poly_term_a1, poly_term_a2);
+	double answer = poly_eval(poly_result_a1, 5);
+	ck_assert_double_eq_tol(6375, answer, 0.001);
+
+	polynomial *poly_term_b1 = poly_create_term(-2, 5);
+	polynomial *poly_term_b2 = poly_create_term(-1, 3);
+	polynomial *poly_result_b1 = poly_add(poly_term_b1, poly_term_b2);
+	answer = poly_eval(poly_result_b1, 5);
+	ck_assert_double_eq_tol(-6375, answer, 0.001);
+
+	poly_destroy(poly_term_a1);
+	poly_destroy(poly_term_a2);
+	poly_destroy(poly_term_b1);
+	poly_destroy(poly_term_b2);
+	poly_destroy(poly_result_a1);
+	poly_destroy(poly_result_b1);
+} END_TEST 
+
 START_TEST(test_poly_sort)
 {
 	polynomial *poly_term_1 = poly_create_term(2, 5);
@@ -123,6 +145,7 @@ Suite * poly_test_suite(void)
 	tcase_add_test(tc1, test_poly_add);
 	tcase_add_test(tc1, test_poly_sub);
 	tcase_add_test(tc1, test_poly_equal);
+	tcase_add_test(tc1, test_poly_eval);
 	tcase_add_test(tc1, test_poly_sort);
 	return s1;
 }

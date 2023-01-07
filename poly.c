@@ -72,7 +72,7 @@ static unsigned int sizeof_poly(const polynomial * p)
 	return (total_size);
 }
 
-char *poly_to_string(const polynomial * p)
+char *poly_to_string(const polynomial *p)
 {
 	// Syntax modified from Liam Echlin's whiteboard demo
 	if (!p) {
@@ -216,6 +216,18 @@ bool poly_equal(const polynomial *a, const polynomial *b)
   return(true);
 }
 
+double poly_eval(const polynomial *p, double x)
+{
+  if (!p) {
+    return(0.0);
+  }
+  double total = 0.0;
+  while(p) {
+    total += (p->coeff * (pow(x, p->exp)));
+    p = p->next;
+  }
+  return(total);
+}
 static void swap_poly(polynomial *p) {
 // Swaps a given polynomial's data with the previous polynomial's data
 // if the given polynomial p has a larger exponent than it.
