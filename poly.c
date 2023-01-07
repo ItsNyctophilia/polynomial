@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,8 +6,8 @@
 
 #include "poly.h"
 
-static void sort_poly(polynomial * p);
-static void sort_poly(polynomial * p);
+static void sort_poly(polynomial *p);
+static void swap_poly(polynomial *p);
 
 struct term *poly_create_term(int coeff, unsigned int exp)
 {
@@ -20,7 +21,7 @@ struct term *poly_create_term(int coeff, unsigned int exp)
 	return node;
 }
 
-void poly_destroy(polynomial * eqn)
+void poly_destroy(polynomial *eqn)
 {
 	while (eqn) {
 		struct term *tmp = eqn->next;
@@ -29,7 +30,7 @@ void poly_destroy(polynomial * eqn)
 	}
 }
 
-void poly_print(const polynomial * eqn)
+void poly_print(const polynomial *eqn)
 {
 	if (!eqn) {
 		return;
@@ -46,7 +47,7 @@ void poly_print(const polynomial * eqn)
 	poly_print(eqn->next);
 }
 
-static unsigned int sizeof_poly(const polynomial * p)
+static unsigned int sizeof_poly(const polynomial *p)
 {
 	unsigned int total_size = 1;	// Add first digit in coeff
 	unsigned int coeff = abs(p->coeff);
@@ -72,7 +73,7 @@ static unsigned int sizeof_poly(const polynomial * p)
 	return (total_size);
 }
 
-char *poly_to_string(const polynomial * p)
+char *poly_to_string(const polynomial *p)
 {
 	// Syntax modified from Liam Echlin's whiteboard demo
 	if (!p) {
@@ -80,29 +81,71 @@ char *poly_to_string(const polynomial * p)
 	}
 
 	char *end_poly_str = malloc(1);
+	if (!end_poly_str) {
+		return (NULL);
+	}
 	end_poly_str[0] = '\0';
+	bool first_run = true;
 
 	while (p) {
 		while (!p->coeff) {
 			p = p->next;
+			if (!p) {
+				return (end_poly_str);
+			}
 		}
 		unsigned int poly_size = sizeof_poly(p);
 		poly_size += 2;	// plus space for " +/-"
 		char *curr_poly_str = malloc(poly_size + 1);	// Poly size plus '\0'
-		snprintf(curr_poly_str, poly_size + 1, "%dx^%d", p->coeff,
-			 p->exp);
+		if (!curr_poly_str) {
+			free(end_poly_str);
+			return (NULL);
+		}
 		end_poly_str =
 		    realloc(end_poly_str, strlen(end_poly_str) + poly_size + 1);
 		if (!p->next) {
-			snprintf(curr_poly_str, poly_size + 1, "%dx^%d",
-				 p->coeff, p->exp);
+			if (p->exp) {
+				snprintf(curr_poly_str, poly_size + 1,
+					 "%s%d%s%s%d", first_run
+					 && p->coeff > 0 ? "+" : "", p->coeff,
+					 p->exp > 0 ? "x" : "",
+					 p->exp > 1 ? "^" : "", p->exp);
+			} else {
+				snprintf(curr_poly_str, poly_size + 1,
+					 "%s%d%s%s", first_run
+					 && p->coeff > 0 ? "+" : "", p->coeff,
+					 p->exp > 0 ? "x" : "",
+					 p->exp > 1 ? "^" : "");
+			}
 			strncat(end_poly_str, curr_poly_str,
 				strlen(curr_poly_str));
 			free(curr_poly_str);
 			break;
 		}
-		snprintf(curr_poly_str, poly_size + 1, "%dx^%d %s", p->coeff,
-			 p->exp, p->next->coeff > 0 ? "+" : "");
+		// The following disgusting snprintf call determines which symbols
+		// are displayed for a given term based on its values using a copious
+		// amount of ternary operators
+		if (p->exp > 1) {
+			snprintf(curr_poly_str, poly_size + 1, "%s%d%s%s%d%s%s",
+				 first_run
+				 && p->coeff > 0 ? "+" : "", p->coeff,
+				 p->exp > 0 ? "x" : "", p->exp > 1 ? "^" : "",
+				 p->exp, p->next->coeff
+				 && p->next ? " " : "",
+				 p->next->coeff > 0 ? "+" : "");
+		} else {
+			// Terms with exponents of 1 or 0
+			snprintf(curr_poly_str, poly_size + 1, "%s%d%s%s%s%s",
+				 first_run
+				 && p->coeff > 0 ? "+" : "", p->coeff,
+				 p->exp > 0 ? "x" : "", p->exp > 1 ? "^" : "",
+				 p->next->coeff
+				 && p->next ? " " : "",
+				 p->next->coeff > 0 ? "+" : "");
+		}
+		if (first_run) {
+			first_run = false;
+		}
 		strncat(end_poly_str, curr_poly_str, strlen(curr_poly_str));
 		free(curr_poly_str);
 		p = p->next;
@@ -110,9 +153,9 @@ char *poly_to_string(const polynomial * p)
 	return (end_poly_str);
 }
 
-polynomial *poly_add(const polynomial * a, const polynomial * b)
+polynomial *poly_add(const polynomial *a, const polynomial *b)
 {
-	// Syntax taken from Liam Echlin
+	// Syntax taken from Liam Echlin's whiteboard demo
 
 	polynomial *chain = NULL;
 	polynomial **curr = &chain;
@@ -154,9 +197,9 @@ polynomial *poly_add(const polynomial * a, const polynomial * b)
 	return chain;
 }
 
-polynomial *poly_sub(const polynomial * a, const polynomial * b)
+polynomial *poly_sub(const polynomial *a, const polynomial *b)
 {
-	// Syntax taken from Liam Echlin
+	// Syntax modified from Liam Echlin's poly_add function
 
 	polynomial *chain = NULL;
 	polynomial **curr = &chain;
@@ -198,7 +241,7 @@ polynomial *poly_sub(const polynomial * a, const polynomial * b)
 	return chain;
 }
 
-bool poly_equal(const polynomial * a, const polynomial * b)
+bool poly_equal(const polynomial *a, const polynomial *b)
 {
 	if (!a || !b) {
 		return (false);
@@ -216,7 +259,7 @@ bool poly_equal(const polynomial * a, const polynomial * b)
 	return (true);
 }
 
-double poly_eval(const polynomial * p, double x)
+double poly_eval(const polynomial *p, double x)
 {
 	if (!p) {
 		return (0.0);
@@ -229,9 +272,9 @@ double poly_eval(const polynomial * p, double x)
 	return (total);
 }
 
-void poly_iterate(polynomial * p, void (*transform)(struct term *))
+void poly_iterate(polynomial *p, void (*transform)(struct term *))
 {
-	// Code taken from Liam Echlin
+	// Syntax taken from Liam Echlin's list.c iterate function
 	if(!p || !transform) {
 		return;
 	}
@@ -246,10 +289,11 @@ void poly_iterate(polynomial * p, void (*transform)(struct term *))
 		transform(p);
 		p = p->next;
 	}
+  sort_poly(p);
 	return;
 }
 
-static void swap_poly(polynomial * p)
+static void swap_poly(polynomial *p)
 {
 // Swaps a given polynomial's data with the previous polynomial's data
 // if the given polynomial p has a larger exponent than it.
@@ -262,7 +306,7 @@ static void swap_poly(polynomial * p)
 	return;
 }
 
-static void sort_poly(polynomial * p)
+static void sort_poly(polynomial *p)
 {
 	if (!p) {
 		return;
