@@ -5,6 +5,9 @@
 
 #include "poly.h"
 
+static void sort_poly(polynomial *p);
+static void sort_poly(polynomial *p);
+
 struct term *poly_create_term(int coeff, unsigned int exp)
 {
 	struct term *node = malloc(sizeof(*node));
@@ -71,7 +74,7 @@ static unsigned int sizeof_poly(const polynomial * p)
 
 char *poly_to_string(const polynomial * p)
 {
-	// Syntax taken from Liam Echlin
+	// Syntax modified from Liam Echlin's whiteboard demo
 	if (!p) {
 		return (NULL);
 	}
@@ -147,6 +150,7 @@ polynomial *poly_add(const polynomial * a, const polynomial * b)
 		last = *curr;
 		curr = &(*curr)->next;
 	}
+  sort_poly(chain);
 	return chain;
 }
 
@@ -190,5 +194,43 @@ polynomial *poly_sub(const polynomial * a, const polynomial * b)
 		last = *curr;
 		curr = &(*curr)->next;
 	}
+  sort_poly(chain);
 	return chain;
+}
+
+static void swap_poly(polynomial *p) {
+// Swaps a given polynomial's data with the previous polynomial's data
+// if the given polynomial p has a larger exponent than it.
+    int tmp_coeff = p->prev->coeff;
+    unsigned int tmp_exp = p->prev->exp;
+    p->prev->coeff = p->coeff;
+    p->prev->exp = p->exp;
+    p->coeff = tmp_coeff;
+    p->exp = tmp_exp;
+    return;
+}
+
+static void sort_poly(polynomial *p) 
+{
+  if (!p) {
+    return;
+  }
+  // Code based off of from Liam Echlin's insertion sort demo
+  unsigned int sz = 0;
+
+  polynomial *p_tmp = p;
+  while(p_tmp) {
+    ++sz;
+    p_tmp = p_tmp->next;
+  }
+
+  for (unsigned int i = 1; i < sz; ++i) {
+    unsigned int idx = i;
+     while(idx > 0 && p->prev && p->exp > p->prev->exp) {
+      swap_poly(p);
+      --idx;
+    }
+    ++i;
+  }
+  return;
 }
